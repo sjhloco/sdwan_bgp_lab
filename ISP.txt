@@ -1,0 +1,208 @@
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname ISP
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain name isp.com
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username admin password 0 admin
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback99
+ no ip address
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/0
+ description UPLINK > SD-WAN - eth1
+ ip address 100.100.100.254 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description UPLINK > S1-cEdge01 - Gi1
+ ip address 192.168.10.1 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description UPLINK > S1-cEdge02 - Gi1
+ ip address 192.168.20.1 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ description UPLINK > S2-cEdge01 - Gi1
+ ip address 192.168.30.1 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/4
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/5
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/6
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/7
+ ip address dhcp
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router bgp 65000
+ bgp log-neighbor-changes
+ network 10.10.10.0 mask 255.255.255.0
+ network 20.20.20.0 mask 255.255.255.0
+ network 30.30.30.0 mask 255.255.255.0
+ neighbor 192.168.10.2 remote-as 65111
+ neighbor 192.168.10.2 local-as 10 no-prepend replace-as
+ neighbor 192.168.10.2 description ISP A
+ neighbor 192.168.10.2 route-map RM_ISP_OUT out
+ neighbor 192.168.20.2 remote-as 65111
+ neighbor 192.168.20.2 local-as 20 no-prepend replace-as
+ neighbor 192.168.20.2 description ISP B
+ neighbor 192.168.20.2 route-map RM_ISP_OUT out
+ neighbor 192.168.30.2 remote-as 65121
+ neighbor 192.168.30.2 local-as 30 no-prepend replace-as
+ neighbor 192.168.30.2 description ISP C
+ neighbor 192.168.30.2 route-map RM_ISP_OUT out
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip nat inside source list 1 interface GigabitEthernet0/7 overload
+ip route 10.10.10.0 255.255.255.0 Null0
+ip route 20.20.20.0 255.255.255.0 Null0
+ip route 30.30.30.0 255.255.255.0 Null0
+!
+!
+ip prefix-list PL_DEFAULT_ROUTE seq 5 permit 0.0.0.0/0
+!
+route-map RM_ISP_OUT permit 10
+ match ip address prefix-list PL_DEFAULT_ROUTE
+!
+!
+access-list 1 permit any
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+line aux 0
+line vty 0 4
+ exec-timeout 0 0
+ privilege level 15
+ login
+ transport input none
+!
+no scheduler allocate
+

@@ -1,0 +1,95 @@
+
+viptela 20.3.4
+
+S1-vMgmt01 login: admin
+Password:
+Welcome to Viptela CLI
+admin connected from 127.0.0.1 using console on S1-vMgmt01
+S1-vMgmt01# show running-config
+Possible completions:
+  banner       Banner information
+  probe        Probe information
+  probe-path   Probe-Path information
+  security     Security information
+  snmp         SNMP information
+  system       System parameter information
+  tls          Global TLS keystore configuration
+  vpn          VPN instance information
+  |            Output modifiers
+  <cr>
+S1-vMgmt01# show running-config
+system
+ host-name             S1-vMgmt01
+ system-ip             192.168.1.1
+ site-id               1
+ admin-tech-on-failure
+ organization-name     stesworld
+ clock timezone Europe/London
+ vbond 100.100.100.2
+ aaa
+  auth-order local radius tacacs
+  usergroup basic
+   task system read write
+   task interface read write
+  !
+  usergroup netadmin
+  !
+  usergroup operator
+   task system read
+   task interface read
+   task policy read
+   task routing read
+   task security read
+  !
+  usergroup tenantadmin
+  !
+  user admin
+   password $6$Qd1no/q/7g7NWwLv$Jsfx9uyH1lqPZw/6G3C0nxc0yxLkaYsL6KNFB3.UpJqksm8B1h/kxGWQR9xxVQqHJ6FcQrX2ZhGVVrISLyaUV.
+  !
+  user ciscotacro
+   description CiscoTACReadOnly
+   group       operator
+   status      enabled
+  !
+  user ciscotacrw
+   description CiscoTACReadWrite
+   group       netadmin
+   status      enabled
+  !
+ !
+ logging
+  disk
+   enable
+  !
+ !
+ ntp
+  server uk.pool.ntp.org
+   version 4
+  exit
+ !
+!
+vpn 0
+ dns 1.1.1.1 primary
+ dns 8.8.8.8 secondary
+ interface eth1
+  ip address 100.100.100.1/24
+  tunnel-interface
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service stun
+   allow-service https
+  !
+  no shutdown
+ !
+ ip route 0.0.0.0/0 100.100.100.254
+!
+vpn 512
+ interface eth0
+  ip address 10.1.1.1/24
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.1.1.254

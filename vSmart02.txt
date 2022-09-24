@@ -1,0 +1,80 @@
+system
+ host-name             S1-vSmart02
+ system-ip             192.168.1.4
+ site-id               1
+ admin-tech-on-failure
+ organization-name     stesworld
+ clock timezone Europe/London
+ vbond 100.100.100.2
+ aaa
+  auth-order local radius tacacs
+  usergroup basic
+   task system read write
+   task interface read write
+  !
+  usergroup netadmin
+  !
+  usergroup operator
+   task system read
+   task interface read
+   task policy read
+   task routing read
+   task security read
+  !
+  usergroup tenantadmin
+  !
+  user admin
+   password $6$YwBqtAm86LdeN6g0$MimxJUnmgowbYDRfSbElBM5MAD6DrRei1wKtVZfOR5MoLD2t.A4jXB2iR9cNfmTcVy/TxbJwVgG7uwHIPbRxE/
+  !
+  user ciscotacro
+   description CiscoTACReadOnly
+   group       operator
+   status      enabled
+  !
+  user ciscotacrw
+   description CiscoTACReadWrite
+   group       netadmin
+   status      enabled
+  !
+ !
+ logging
+  disk
+   enable
+  !
+ !
+ ntp
+  server uk.pool.ntp.org
+   version 4
+  exit
+ !
+!
+omp
+ no shutdown
+ graceful-restart
+!
+vpn 0
+ dns 1.1.1.1 primary
+ dns 8.8.8.8 secondary
+ interface eth1
+  ip address 100.100.100.4/24
+  tunnel-interface
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   no allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service stun
+  !
+  no shutdown
+ !
+ ip route 0.0.0.0/0 100.100.100.254
+!
+vpn 512
+ interface eth0
+  ip address 10.1.1.4/24
+  no shutdown
+ !
+ ip route 0.0.0.0/0 10.1.1.254
+!
+#
