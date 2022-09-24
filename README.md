@@ -10,4 +10,6 @@ The lab is built in EVE-NG using the following devices and images with a usernam
 **S11-cEdge01, S11-cEdge02, S11-Core01, S21-cEdge01, S21-Core01:** *CSR using IOS-XE 17.3.4a*\
 **ISP:** *IOS router using IOSv 15.6(2)T*
 
+The device configs are attached as well as all the vManage device and feature templates and the CSV files of the values for these.
+
 ![eve-lab-topology](https://user-images.githubusercontent.com/33333983/192093886-05e17b35-4688-4f63-9437-7ee27bc5b0cb.png)
