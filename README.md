@@ -1,6 +1,6 @@
 # sdwan_bgp_lab
 
-The configuration files from a blog post I wrote about [Cisco SD-WAN using BGP on the transport side](https://theworldsgonemad.net/2021/2022/sdwan-basics)
+The configuration files from a blog post I wrote about [Cisco SD-WAN using BGP on the transport side](https://theworldsgonemad.net/2022/sdwan-vpn0-bgp/)
 
 ![network-diagram](https://user-images.githubusercontent.com/33333983/192093780-dcf1e706-b520-419f-b03b-64556e50bb7c.png)
 
